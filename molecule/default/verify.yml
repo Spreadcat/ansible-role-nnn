@@ -1,0 +1,43 @@
+---
+# Ansible playbook for verification.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: Verify | Include role default variables file.
+      ansible.builtin.include_vars:
+        file: "{{ item }}"
+      loop:
+        - ../../defaults/main.yml
+        - ./variables.yml
+
+    - name: Verify | Check that NNN binary is in place and usable.
+      ansible.builtin.stat:
+        path: /usr/bin/nnn
+      register: __stat_nnn
+      failed_when: not __stat_nnn.stat.exists or not __stat_nnn.stat.mode == '0755'
+
+    - name: Verify | Check if application has been installed.
+      ansible.builtin.package:
+        name: "{{ nnn_packages }}"
+        state: present
+      become: true
+      check_mode: true
+      register: __nnn_package_check
+      failed_when: __nnn_package_check.changed
+
+    - name: Verify | Check environment variable NNN_ARCHMNT.
+      ansible.builtin.command: "sudo -iu {{ nnn_owner }} echo $NNN_ARCHMNT"
+      become: true
+      register: __shell_output
+      failed_when: __shell_output.stdout != nnn_archmnt
+      changed_when: __shell_output.failed
+
+    - name: Verify | Check environment variable NNN_ORDER.
+      ansible.builtin.command: "sudo -iu {{ nnn_owner }} echo $NNN_ORDER"
+      become: true
+      register: __shell_output_nnn_order
+      failed_when: __shell_output_nnn_order.stdout != [nnn_order[0]['key'], nnn_order[0]['path']] | join(':') + ';'
+      changed_when: __shell_output_nnn_order.failed

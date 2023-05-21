@@ -1,0 +1,73 @@
+---
+# This loop creates environment variables with a content type of
+#
+# $k:$value;
+#
+# Required fields are
+# - 'key'
+# - 'value' | 'plugin' | 'path'
+#
+# The name of the field for 'value' is interchangeable with 'plugin' and 'path'.
+# The name of the variable will then be used as variable name in uppercase letters for
+# the output.
+#
+# If no value is defined the line will be removed from the dest-file.
+#
+# Example:
+# ---
+# # input
+#   var1:
+#     - key: foo
+#     - value: bar
+#
+# # output
+# export VAR1="foo:bar;"
+- name: Config | Add key/value environment variables to Shell include file.  # noqa jinja[spacing]
+  ansible.builtin.lineinfile:
+    dest: "{{ nnn_path_environment_file }}"
+    line: >-
+      export {{ item | upper }}="
+      {%- for x in lookup('ansible.builtin.vars', item) -%}
+       {{ x['key'] }}:{{ x['value'] | default(x['plugin']) | default(x['path']) }};
+      {%- endfor -%}"
+    regexp: "^export {{ item | upper }}="
+    owner: "{{ nnn_owner }}"
+    group: "{{ nnn_group }}"
+    mode: '0644'
+    create: true
+    state: >-
+      {{ 'present' if lookup('ansible.builtin.vars', item) | length > 0 else 'absent' }}
+  loop:
+    - nnn_plug
+    - nnn_order
+
+# This loop creates environment variable with a single string content.
+# Required fields are
+# - 'key'
+# - 'value'
+#
+# The name of the variable will be used as variable name in uppercase letters for
+# the output.
+#
+# If no value is defined the line will be removed from the dest-file.
+#
+# Example:
+# ---
+# # input
+#   var1: "hello world."
+#
+# # output
+# export VAR1="hello world."
+- name: Config | Update string environment variables to Shell include file.
+  ansible.builtin.lineinfile:
+    dest: "{{ nnn_path_environment_file }}"
+    line: "export {{ item | upper }}=\"{{ lookup('ansible.builtin.vars', item) }}\""
+    regexp: "^export {{ item | upper }}="
+    owner: "{{ nnn_owner }}"
+    group: "{{ nnn_group }}"
+    mode: '0644'
+    create: true
+    state: >-
+      {{ 'present' if lookup('ansible.builtin.vars', item) | length > 0 else 'absent' }}
+  loop:
+    - nnn_archmnt

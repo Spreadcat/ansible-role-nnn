@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+
+    - name: "Include variable file"
+      ansible.builtin.include_vars: variables.yml
+
+    - name: "Include dbv.nnn"
+      ansible.builtin.include_role:
+        name: "dbv.nnn"

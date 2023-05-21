@@ -1,0 +1,108 @@
+---
+# defaults file for nnn
+
+# Default packages to install for NNN
+#
+# Example:
+#   nnn_packages:
+#     - nnn
+# doca tags:other
+nnn_packages:
+  - nnn
+  - rsync
+
+# Default state for the installed packages.
+#
+# Example:
+#   nnn_packages_state: "present"
+# doca tags:other
+nnn_packages_state: present
+
+# Default path to the configuration directory.
+#
+# Example:
+#   nnn_path_config_dir: "/home/user/.config/nnn"
+# doca tags:other
+nnn_path_config_dir: "{{ lookup('env', 'HOME') }}/.config/nnn"
+
+# Default user for NNN.
+#
+# Example:
+#   nnn_owner: jdoe
+# doca tags:other
+nnn_owner: "{{ lookup('env', 'USER') }}"
+
+# Default group for NNN.
+#
+# Example:
+#   nnn_group: jdoe
+# doca tags:other
+nnn_group: "{{ lookup('env', 'USER') }}"
+
+# Achive mounter for NNN.
+#
+# If a value is specified the default nnn archive mounter
+# 'archivemount' will be overwritten.
+#
+# Example:
+#   nnn_archmnt: "fuse-archive"
+# doca tags:config
+nnn_archmnt: ""
+
+# Set directory specific ordering.
+#
+# Sort keys can be a/d/e/r/s/t/v (see program option -T).
+# Capitalize to reverse (except 'r').
+# Path must be absolute.
+#
+# Example:
+#   NNN_ORDER:
+#     - key: t
+#       path: /var/log
+# doca tags:config
+nnn_order: []
+
+# List of plugins to install/enable.
+#
+# Plugins will automatically be added to the environment configuration
+# of nnn.
+#
+# Example:
+#   nnn_plugins:
+#     - key: i
+#       plugin: imgview
+#     - key: j
+#       plugin: imgresize
+# doca tags:config
+nnn_plug: []
+
+# URL for downloading a compressed version of the source code for nnn.
+# This is used to fetch the plugins and install them when required.
+#
+# Example:
+#   nnn_url_master: "https://github.com/jarun/nnn/archive/master.tar.gz"
+# doca tags:other
+nnn_url_master: "https://github.com/jarun/nnn/archive/master.tar.gz"
+
+# Path for the file to define the export for the plugin inclusion in.
+#
+# Example:
+#   nnn_path_environment_file: "{{ lookup('env', 'HOME') }}/.bashrc"
+# doca tags:role
+nnn_path_environment_file: "{{ lookup('env', 'HOME') }}/.bash_profile"
+
+# If set to true plugins will be fetched from `nnn_url_master` and installed
+# into the plugin directory.
+#
+# Example:
+#   nnn_plugins_install: true
+# doca tags:role
+nnn_plugins_install: true
+
+# If set to true, existing plugins will be overwritten from the github source
+# and updated on the local disk.
+#
+# Example:
+#   nnn_plugins_update: true
+# doca tags:role
+nnn_plugins_update: false

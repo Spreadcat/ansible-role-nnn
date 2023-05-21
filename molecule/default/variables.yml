@@ -1,0 +1,21 @@
+---
+# Variables for this scenario
+nnn_owner: ansible
+nnn_group: ansible
+
+nnn_path_config_dir: "/home/ansible/.config/nnn"
+
+# Setting some test variables
+nnn_plug:
+  - key: i
+    plugin: imgview
+  - key: r
+    plugin: imgresize
+
+nnn_order:
+  - key: t
+    path: /data/sync/upload
+
+nnn_archmnt: "fuse-archive"
+
+nnn_path_environment_file: /home/ansible/.bash_profile

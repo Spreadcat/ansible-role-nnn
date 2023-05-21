@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+
+    # Ensure all ansible users are using the bash shell per default.
+    - name: Prepare | Change Shell of user ansible to bash.
+      ansible.builtin.user:
+        name: "ansible"
+        shell: "/usr/bin/bash"
+      become: true

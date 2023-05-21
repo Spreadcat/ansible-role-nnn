@@ -1,0 +1,30 @@
+---
+# Install tasks for this roles
+- name: Install | Update APT-Cache.
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 7200
+  become: true
+  when: ansible_os_family | lower == 'debian'
+
+- name: Install | Manage packages.
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: "{{ nnn_packages_state }}"
+  become: true
+  loop: "{{ nnn_packages }}"
+
+- name: Config | Ensure configuration directory is present.
+  ansible.builtin.file:
+    state: directory
+    path: "{{ nnn_path_config_dir }}"
+    owner: "{{ nnn_owner }}"
+    group: "{{ nnn_group }}"
+    mode: "0750"
+
+- name: Install | Install plugins if used.
+  when: nnn_plug | length > 0
+  block:
+
+    - name: Install | Include plugin installation
+      ansible.builtin.include_tasks: install_plugins.yml

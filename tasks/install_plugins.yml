@@ -1,0 +1,52 @@
+---
+- name: Install plugins | Ensure configuration directory is present.
+  ansible.builtin.file:
+    state: directory
+    path: "{{ nnn_path_config_dir }}"
+    owner: "{{ nnn_owner }}"
+    group: "{{ nnn_group }}"
+    mode: "0750"
+
+- name: Install plugins | List all existign plugins.
+  ansible.builtin.find:
+    paths: "{{ nnn_path_config_dir }}/plugins"
+    recurse: false
+  register: __result_list_installed_plugins
+
+# Install all plugins when there are no plugins yet, but plugins
+# shall be installed, or if all plugins shall be updated.
+- name: Install plugins | Install or update all plugins.
+  when:
+    - nnn_plugins_install|bool
+    - (
+        __result_list_installed_plugins.files | length == 0 or
+        nnn_plugins_update
+      )
+  block:
+
+    - name: Install plugins | Fetch compressed file from Github.
+      ansible.builtin.unarchive:
+        src: "{{ nnn_url_master }}"
+        dest: "/tmp"
+        remote_src: true
+        creates: "/tmp/nnn-master/plugins"
+      changed_when: false
+
+    - name: Install plugins | Synchronize plugins into destination directory.
+      ansible.posix.synchronize:
+        src: /tmp/nnn-master/plugins/
+        dest: "{{ nnn_path_config_dir }}/plugins"
+        recursive: true
+        checksum: true
+        rsync_opts:
+          - --no-motd
+      delegate_to: "{{ inventory_hostname }}"
+
+# If plugin has been configured that is not existing is subdirectory in the configuration
+# directory of nnn, this task will fail and stop the execution.
+- name: Install plugins | Verify plugin existance.
+  ansible.builtin.stat:
+    path: "{{ nnn_path_config_dir }}/plugins/{{ item['plugin'] }}"
+  loop: "{{ nnn_plug }}"
+  register: __result_check_configured_plugins
+  failed_when: not __result_check_configured_plugins.stat.exists
