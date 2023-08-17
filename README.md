@@ -6,6 +6,7 @@ Ansible role to install and configure a the [nnn][#nnn] file manager.
 
 * The NNN package must be available in the local file repository.
 * Rsync
+* The role requires `gathered_facts: true` to be set.
 
 ## Role Variables
 
