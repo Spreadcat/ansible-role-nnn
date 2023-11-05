@@ -23,21 +23,21 @@ nnn_packages_state: present
 # Example:
 #   nnn_path_config_dir: "/home/user/.config/nnn"
 # doca tags:other
-nnn_path_config_dir: "{{ lookup('env', 'HOME') }}/.config/nnn"
+nnn_path_config_dir: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/nnn"
 
 # Default user for NNN.
 #
 # Example:
 #   nnn_owner: jdoe
 # doca tags:other
-nnn_owner: "{{ lookup('env', 'USER') }}"
+nnn_owner: "{{ lookup('ansible.builtin.env', 'USER') }}"
 
 # Default group for NNN.
 #
 # Example:
 #   nnn_group: jdoe
 # doca tags:other
-nnn_group: "{{ lookup('env', 'USER') }}"
+nnn_group: "{{ lookup('ansible.builtin.env', 'USER') }}"
 
 # Achive mounter for NNN.
 #
@@ -87,9 +87,9 @@ nnn_url_master: "https://github.com/jarun/nnn/archive/master.tar.gz"
 # Path for the file to define the export for the plugin inclusion in.
 #
 # Example:
-#   nnn_path_environment_file: "{{ lookup('env', 'HOME') }}/.bashrc"
+#   nnn_path_environment_file: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc"
 # doca tags:role
-nnn_path_environment_file: "{{ lookup('env', 'HOME') }}/.bash_profile"
+nnn_path_environment_file: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bash_profile"
 
 # If set to true plugins will be fetched from `nnn_url_master` and installed
 # into the plugin directory.

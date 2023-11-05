@@ -20,7 +20,7 @@ nnn_path_environment_file: str
 
   ```yaml
   # Example:
-  nnn_path_environment_file: "{{ lookup('env', 'HOME') }}/.bashrc"
+  nnn_path_environment_file: "{{ lookup('ansible.builtin.env', 'HOME') }}/.bashrc"
   ```
 
 ```yaml
